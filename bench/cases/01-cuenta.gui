@@ -1,11 +1,11 @@
-@state cuenta = 84
-@state propina = 10
-@state personas = 4
+@state bill = 84
+@state tip = 10
+@state people = 4
 <card>
-## Dividir la cuenta
-<field bind=cuenta type=number min=0>Importe (€)</field>
-<slider bind=propina min=0 max=25 unit=%>Propina</slider>
-<slider bind=personas min=1 max=12>Personas</slider>
-<text role=display tone=primary>{money(cuenta*(1+propina/100)/personas,'EUR')}</text>
-<text tone=muted>por persona · total {money(cuenta*(1+propina/100),'EUR')}</text>
+## Split the bill
+<field bind=bill type=number min=0>Amount (€)</field>
+<slider bind=tip min=0 max=25 unit=%>Tip</slider>
+<slider bind=people min=1 max=12>People</slider>
+<text role=display tone=primary>{money(bill*(1+tip/100)/people,'EUR')}</text>
+<text tone=muted>per person · total {money(bill*(1+tip/100),'EUR')}</text>
 </card>

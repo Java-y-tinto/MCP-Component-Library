@@ -34,29 +34,29 @@ function propSig(name: string, p: PropDef): string {
 export function signature(d: ComponentDef): string {
   const props = Object.entries(d.props).map(([n, p]) => propSig(n, p)).join(', ');
   const ct = d.content;
-  const content = ct === 'none' ? '' : ct === 'text' ? ` [${d.textAs ?? 'texto'}]` : ct === 'nodes' ? ' [nodos]' : ` [${ct.only.map((o) => o + '*').join(' ')}]`;
+  const content = ct === 'none' ? '' : ct === 'text' ? ` [${d.textAs ?? 'text'}]` : ct === 'nodes' ? ' [nodes]' : ` [${ct.only.map((o) => o + '*').join(' ')}]`;
   return `${d.parentOnly ? '  ' : ''}${d.name}(${props})${content} — ${d.doc}`;
 }
 
-const RULES = `GUI-ML: responde con Markdown y etiquetas de componentes. Una etiqueta por línea, sin sangría. Nunca uses comillas dobles.
-Valores sin comillas (pad=3), con comillas simples si tienen espacios (sub='Paseo por el Retiro') o expresión ({n*2}). Atributo sin valor = true.
-El texto va como contenido: <button>Enviar</button>. Cierra con </nombre>, o usa <x .../> si no tiene contenido.
-Estado: @state x = expr. Datos: @data d: col1, col2 y debajo filas | a | b. {expr} dentro de texto o valores se recalcula al cambiar el estado.
-Acciones: do={x = x + 1; y = 0} cambia estado local; send='texto {x}' envía un mensaje al chat; link=https://… abre un enlace.
-Estilo solo con props, nunca CSS. Escapa \\< \\{ \\| \\@ si los necesitas como texto.
-Expr: + - * / % == != < <= > >= && || ! ?: 'texto' [a,b] fila.col. Funciones: round(x,d) floor ceil abs min max clamp(x,a,b) fmt(x,d) money(x,'EUR') pct(x) time(segs) len(l) sum(d,'col') avg(d,'col') get(d,clave,'col') has(l,v) upper lower join(l,sep)`;
+const RULES = `GUI-ML: answer with Markdown plus component tags. One tag per line, no indentation. Never use double quotes.
+Values: bare (pad=3), single-quoted if they contain spaces (sub='Walk in the park') or an expression ({n*2}). Attribute without value = true.
+Text goes as content: <button>Send</button>. Close with </name>, or write <x .../> when empty.
+State: @state x = expr. Data: @data d: col1, col2 followed by rows | a | b. {expr} in text or values updates when state changes.
+Actions: do={x = x + 1; y = 0} changes local state; send='text {x}' sends a chat message; link=https://… opens a link.
+Style only through props, never CSS. Escape \\< \\{ \\| \\@ to use them as text.
+Expr: + - * / % == != < <= > >= && || ! ?: 'text' [a,b] row.col. Functions: round(x,d) floor ceil abs min max clamp(x,a,b) fmt(x,d) money(x,'EUR') pct(x) time(secs) len(l) sum(d,'col') avg(d,'col') get(d,key,'col') has(l,v) upper lower join(l,sep)`;
 
 export async function buildPrompt(): Promise<string> {
   const examples = await Promise.all(EXAMPLES.map((n) => Bun.file(join(ROOT, `bench/cases/${n}.gui`)).text()));
   return [
     RULES,
     '',
-    'Componentes (? opcional, =valor por defecto, [contenido]):',
+    'Components (? optional, =default, [content]):',
     ...DEFS.map(signature),
     '',
-    `Iconos: ${[...NAMES].sort().join(' ')}`,
+    `Icons: ${[...NAMES].sort().join(' ')}`,
     '',
-    ...examples.flatMap((e, i) => [`Ejemplo ${i + 1}:`, e.trimEnd(), '']),
+    ...examples.flatMap((e, i) => [`Example ${i + 1}:`, e.trimEnd(), '']),
   ].join('\n');
 }
 

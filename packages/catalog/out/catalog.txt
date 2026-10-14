@@ -1,59 +1,59 @@
-GUI-ML: responde con Markdown y etiquetas de componentes. Una etiqueta por línea, sin sangría. Nunca uses comillas dobles.
-Valores sin comillas (pad=3), con comillas simples si tienen espacios (sub='Paseo por el Retiro') o expresión ({n*2}). Atributo sin valor = true.
-El texto va como contenido: <button>Enviar</button>. Cierra con </nombre>, o usa <x .../> si no tiene contenido.
-Estado: @state x = expr. Datos: @data d: col1, col2 y debajo filas | a | b. {expr} dentro de texto o valores se recalcula al cambiar el estado.
-Acciones: do={x = x + 1; y = 0} cambia estado local; send='texto {x}' envía un mensaje al chat; link=https://… abre un enlace.
-Estilo solo con props, nunca CSS. Escapa \< \{ \| \@ si los necesitas como texto.
-Expr: + - * / % == != < <= > >= && || ! ?: 'texto' [a,b] fila.col. Funciones: round(x,d) floor ceil abs min max clamp(x,a,b) fmt(x,d) money(x,'EUR') pct(x) time(segs) len(l) sum(d,'col') avg(d,'col') get(d,clave,'col') has(l,v) upper lower join(l,sep)
+GUI-ML: answer with Markdown plus component tags. One tag per line, no indentation. Never use double quotes.
+Values: bare (pad=3), single-quoted if they contain spaces (sub='Walk in the park') or an expression ({n*2}). Attribute without value = true.
+Text goes as content: <button>Send</button>. Close with </name>, or write <x .../> when empty.
+State: @state x = expr. Data: @data d: col1, col2 followed by rows | a | b. {expr} in text or values updates when state changes.
+Actions: do={x = x + 1; y = 0} changes local state; send='text {x}' sends a chat message; link=https://… opens a link.
+Style only through props, never CSS. Escape \< \{ \| \@ to use them as text.
+Expr: + - * / % == != < <= > >= && || ! ?: 'text' [a,b] row.col. Functions: round(x,d) floor ceil abs min max clamp(x,a,b) fmt(x,d) money(x,'EUR') pct(x) time(secs) len(l) sum(d,'col') avg(d,'col') get(d,key,'col') has(l,v) upper lower join(l,sep)
 
-Componentes (? opcional, =valor por defecto, [contenido]):
-card(pad?:0-6=3, tone?:surface|primary|secondary|tertiary|error=surface, emphasis?:low|high=low) [nodos] — Contenedor con fondo y esquinas
-stack(dir?:row|col=col, gap?:0-6=2, align?:start|center|end|stretch|between=stretch) [nodos] — Apila hijos; row hace wrap
-text(role?:display|headline|title|body|label=body, size?:s|m|l=m, tone?:default|muted|primary|secondary|tertiary|error=default, em?:bool, align?:start|center|end) [texto] — Texto con estilo tipográfico
-button(variant?:filled|tonal|outlined|text|elevated=filled, size?:xs|s|m|l|xl=s, shape?:round|square=round, icon?, do?, send?:s, link?) [etiqueta] — Botón; usa do, send o link
-field(bind:state, type?:text|number|email|date|tel=text, min?:n, max?:n, step?:n, req?:bool) [etiqueta] — Campo de entrada
-slider(bind:state, min:n, max:n, step?:n=1, unit?:s) [etiqueta] — Deslizador numérico
-choice(bind:state, mode?:chips|segmented|radio|select|check=chips, multi?:bool, from?:data, label?:s) [opt*] — Elegir opciones; check ⇒ varias
-  opt(v?:s=texto) [texto] — Opción de choice
-toggle(bind:state, kind?:switch|check=switch) [etiqueta] — Interruptor o casilla
-list(divider?:bool) [item*] — Lista de elementos
-  item(icon?, sub?:s, trail?:s, do?, send?:s, link?) [titular] — Elemento de lista
-table(data, cols?:col,…, best?:col:min|max,…) — Tabla de un @data
-chart(type:bar|line|pie|donut, data, x:col, y:col,…, unit?:s) — Gráfico de un @data
-timer(secs:n, auto?:bool) [etiqueta] — Temporizador con controles
-each(in:data, as?:id=it) [nodos] — Repite hijos por fila
-if(test:{expr}) [nodos] — Muestra hijos si test es verdadero
+Components (? optional, =default, [content]):
+card(pad?:0-6=3, tone?:surface|primary|secondary|tertiary|error=surface, emphasis?:low|high=low) [nodes] — Surface container
+stack(dir?:row|col=col, gap?:0-6=2, align?:start|center|end|stretch|between=stretch) [nodes] — Stack children; row wraps
+text(role?:display|headline|title|body|label=body, size?:s|m|l=m, tone?:default|muted|primary|secondary|tertiary|error=default, em?:bool, align?:start|center|end) [text] — Styled text
+button(variant?:filled|tonal|outlined|text|elevated=filled, size?:xs|s|m|l|xl=s, shape?:round|square=round, icon?, do?, send?:s, link?) [label] — Button; needs do, send or link
+field(bind:state, type?:text|number|email|date|tel=text, min?:n, max?:n, step?:n, req?:bool) [label] — Input field
+slider(bind:state, min:n, max:n, step?:n=1, unit?:s) [label] — Numeric slider
+choice(bind:state, mode?:chips|segmented|radio|select|check=chips, multi?:bool, from?:data, label?:s) [opt*] — Pick options; check = multiple
+  opt(v?:s=text) [text] — Choice option
+toggle(bind:state, kind?:switch|check=switch) [label] — Switch or checkbox
+list(divider?:bool) [item*] — List of items
+  item(icon?, sub?:s, trail?:s, do?, send?:s, link?) [headline] — List item
+table(data, cols?:col,…, best?:col:min|max,…) — Table of a @data
+chart(type:bar|line|pie|donut, data, x:col, y:col,…, unit?:s) — Chart of a @data
+timer(secs:n, auto?:bool) [label] — Countdown timer with controls
+each(in:data, as?:id=it) [nodes] — Repeat children per row
+if(test:{expr}) [nodes] — Show children if test is true
 
-Iconos: add alarm analytics bar_chart beach_access bookmark calendar_month call castle celebration chat check close cloud coffee credit_card delete directions directions_car directions_walk edit error euro event favorite flight group help hotel info lightbulb link local_bar location_on mail map museum open_in_new pause payments person pie_chart play_arrow rainy receipt remove replay restart_alt restaurant schedule search sell send share shopping_cart skip_next star sunny thumb_down thumb_up timer today train tram trending_down trending_up warning
+Icons: add alarm analytics bar_chart beach_access bookmark calendar_month call castle celebration chat check close cloud coffee credit_card delete directions directions_car directions_walk edit error euro event favorite flight group help hotel info lightbulb link local_bar location_on mail map museum open_in_new pause payments person pie_chart play_arrow rainy receipt remove replay restart_alt restaurant schedule search sell send share shopping_cart skip_next star sunny thumb_down thumb_up timer today train tram trending_down trending_up warning
 
-Ejemplo 1:
-@state cuenta = 84
-@state propina = 10
-@state personas = 4
+Example 1:
+@state bill = 84
+@state tip = 10
+@state people = 4
 <card>
-## Dividir la cuenta
-<field bind=cuenta type=number min=0>Importe (€)</field>
-<slider bind=propina min=0 max=25 unit=%>Propina</slider>
-<slider bind=personas min=1 max=12>Personas</slider>
-<text role=display tone=primary>{money(cuenta*(1+propina/100)/personas,'EUR')}</text>
-<text tone=muted>por persona · total {money(cuenta*(1+propina/100),'EUR')}</text>
+## Split the bill
+<field bind=bill type=number min=0>Amount (€)</field>
+<slider bind=tip min=0 max=25 unit=%>Tip</slider>
+<slider bind=people min=1 max=12>People</slider>
+<text role=display tone=primary>{money(bill*(1+tip/100)/people,'EUR')}</text>
+<text tone=muted>per person · total {money(bill*(1+tip/100),'EUR')}</text>
 </card>
 
-Ejemplo 2:
-@state nombre = ''
-@state fecha = ''
-@state personas = 2
-@state turno = 'cena'
-@state terraza = false
+Example 2:
+@state name = ''
+@state date = ''
+@state people = 2
+@state slot = 'dinner'
+@state terrace = false
 <card>
-## Reservar mesa
-<field bind=nombre req>Nombre</field>
-<field bind=fecha type=date req>Fecha</field>
-<choice bind=turno mode=segmented>
-<opt v=comida>Comida</opt>
-<opt v=cena>Cena</opt>
+## Book a table
+<field bind=name req>Name</field>
+<field bind=date type=date req>Date</field>
+<choice bind=slot mode=segmented>
+<opt v=lunch>Lunch</opt>
+<opt v=dinner>Dinner</opt>
 </choice>
-<slider bind=personas min=1 max=10>Personas</slider>
-<toggle bind=terraza>Terraza</toggle>
-<button icon=event send='Reserva: {nombre}, {fecha}, {turno}, {personas} pers., terraza {terraza ? 'sí' : 'no'}'>Confirmar</button>
+<slider bind=people min=1 max=10>People</slider>
+<toggle bind=terrace>Terrace</toggle>
+<button icon=event send='Booking: {name}, {date}, {slot}, {people} people, terrace {terrace ? 'yes' : 'no'}'>Confirm</button>
 </card>

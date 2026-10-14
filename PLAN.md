@@ -73,6 +73,8 @@ Formato: decisión, alternativas consideradas y motivo. Las decisiones D1–D9 v
 
 **D16. Vía local aplazada (14 oct 2026, decisión del usuario).** Al usuario le es indiferente el chat local, así que sale de v1: la fase 7 no se ejecuta, `gen/gbnf.ts` no se escribe y el benchmark solo mide con Claude. D4 queda como diseño de referencia si se retoma. El parser y el renderer no cambian, porque no dependen de la vía.
 
+**D17. Todo lo que lee el modelo va en inglés (14 oct 2026, petición del usuario).** Afecta al prompt del catálogo, a las descripciones de componentes y props, a la documentación generada, a los mensajes de diagnóstico, al texto del resultado de `render` y al contexto de estado. El inglés gasta menos tokens que el español con el mismo contenido y es el idioma en que mejor siguen instrucciones los modelos. Los comentarios del código y este plan siguen en español, porque los lee el usuario. Los casos del benchmark que no aparecen en el prompt siguen en español, porque representan el uso real.
+
 ---
 
 ## 3. Arquitectura y estructura del repositorio
@@ -243,8 +245,8 @@ export type DiagCode =
   | 'bad_icon'        // se omite el icono
   | 'limit';          // se trunca la entrada
 export interface Diag { code: DiagCode; line: number; sev: 'warn' | 'error'; msg: string }
-// msg en español y ≤ 80 caracteres, pensado para el modelo:
-// "L7 slider: falta bind (nodo omitido)"
+// msg en inglés (lo lee el modelo, D17) y ≤ 80 caracteres:
+// "L7 slider: missing bind (node dropped)"
 ```
 
 Límites (constantes en `packages/lang/src/limits.ts`): entrada ≤ 20 000 caracteres, ≤ 400 nodos, ≤ 40 `@state`, ≤ 10 `@data` con ≤ 200 filas cada uno, expresión ≤ 300 caracteres y ≤ 10 000 pasos de evaluación.
@@ -256,7 +258,7 @@ Versiones: `@modelcontextprotocol/server` 2.3.1 y `@modelcontextprotocol/ext-app
 ```ts
 // Esquema (zod 4.6.7)
 // Siempre z.object(): la forma plana { campo: z.string() } está deprecada en ext-apps 2.0.3.
-const inputSchema  = z.object({ ui: z.string().max(20000).describe('Interfaz en GUI-ML') });
+const inputSchema  = z.object({ ui: z.string().max(20000).describe('UI in GUI-ML') });
 const outputSchema = z.object({ ok: z.boolean(), nodes: z.number(), diags: z.array(z.object({
                        line: z.number(), code: z.string(), msg: z.string() })) });
 
@@ -270,8 +272,8 @@ registerAppTool(server, 'render', {
 
 // handler: parse(ui, {final:true}) → resultado
 { content: [{ type: 'text', text: diags.length
-      ? `UI pintada con ${diags.length} avisos. Corrige en la próxima llamada:\n` + diags.map(d => d.msg).join('\n')
-      : 'UI pintada sin avisos.' }],
+      ? `Rendered with ${diags.length} warnings. Fix them next time:\n` + diags.map(d => d.msg).join('\n')
+      : 'Rendered with no warnings.' }],
   structuredContent: { ok: !diags.some(d => d.sev === 'error'), nodes, diags },
   _meta: { catalog: CATALOG_HASH } }
 
@@ -290,7 +292,7 @@ La vista usa `App` de `@modelcontextprotocol/ext-apps`:
 - `ontoolinput`: fija `source` con `final=true`.
 - `ontoolresult`: muestra un indicador discreto si hay errores (no los diagnósticos completos).
 - `onhostcontextchanged`: `theme` claro u oscuro y se aplica el modo.
-- Acciones: `send` llama a `app.sendMessage(...)`, `link` llama a `app.openLink(...)` y los cambios de estado llaman a `app.updateModelContext(...)` con *debounce* de 1 s y texto compacto `estado: personas=6, propina=15`.
+- Acciones: `send` llama a `app.sendMessage(...)`, `link` llama a `app.openLink(...)` y los cambios de estado llaman a `app.updateModelContext(...)` con *debounce* de 1 s y texto compacto en inglés `state: people=6, tip=15`.
 - El tamaño lo notifica `App` (`ui/notifications/size-changed`). Si no se hace solo, se observa `document.body` con `ResizeObserver`.
 
 ---
@@ -394,18 +396,18 @@ Encabezados `#`, `##` y `###`; párrafos; listas `-` y `1.`; citas `>`; separado
 
 Son los casos 1, 3, 4, 7 y 8 del benchmark. Están escritos tal y como debe aceptarlos el parser sin diagnósticos.
 
-**E1. Calculadora: dividir la cuenta**
+**E1. Calculadora: dividir la cuenta** (en inglés, porque es ejemplo del prompt)
 ```
-@state cuenta = 84
-@state propina = 10
-@state personas = 4
+@state bill = 84
+@state tip = 10
+@state people = 4
 <card>
-## Dividir la cuenta
-<field bind=cuenta type=number min=0>Importe (€)</field>
-<slider bind=propina min=0 max=25 unit=%>Propina</slider>
-<slider bind=personas min=1 max=12>Personas</slider>
-<text role=display tone=primary>{money(cuenta*(1+propina/100)/personas,'EUR')}</text>
-<text tone=muted>por persona · total {money(cuenta*(1+propina/100),'EUR')}</text>
+## Split the bill
+<field bind=bill type=number min=0>Amount (€)</field>
+<slider bind=tip min=0 max=25 unit=%>Tip</slider>
+<slider bind=people min=1 max=12>People</slider>
+<text role=display tone=primary>{money(bill*(1+tip/100)/people,'EUR')}</text>
+<text tone=muted>per person · total {money(bill*(1+tip/100),'EUR')}</text>
 </card>
 ```
 
@@ -431,24 +433,24 @@ Son los casos 1, 3, 4, 7 y 8 del benchmark. Están escritos tal y como debe acep
 <timer secs=180>Cuajar cada lado</timer>
 ```
 
-**E3. Formulario de reserva**
+**E3. Formulario de reserva** (en inglés, porque es ejemplo del prompt)
 ```
-@state nombre = ''
-@state fecha = ''
-@state personas = 2
-@state turno = 'cena'
-@state terraza = false
+@state name = ''
+@state date = ''
+@state people = 2
+@state slot = 'dinner'
+@state terrace = false
 <card>
-## Reservar mesa
-<field bind=nombre req>Nombre</field>
-<field bind=fecha type=date req>Fecha</field>
-<choice bind=turno mode=segmented>
-<opt v=comida>Comida</opt>
-<opt v=cena>Cena</opt>
+## Book a table
+<field bind=name req>Name</field>
+<field bind=date type=date req>Date</field>
+<choice bind=slot mode=segmented>
+<opt v=lunch>Lunch</opt>
+<opt v=dinner>Dinner</opt>
 </choice>
-<slider bind=personas min=1 max=10>Personas</slider>
-<toggle bind=terraza>Terraza</toggle>
-<button icon=event send='Reserva: {nombre}, {fecha}, {turno}, {personas} pers., terraza {terraza ? 'sí' : 'no'}'>Confirmar</button>
+<slider bind=people min=1 max=10>People</slider>
+<toggle bind=terrace>Terrace</toggle>
+<button icon=event send='Booking: {name}, {date}, {slot}, {people} people, terrace {terrace ? 'yes' : 'no'}'>Confirm</button>
 </card>
 ```
 
@@ -728,14 +730,14 @@ El formato JSON es compacto y razonable, comparable con A2UI pero sin su envolto
 
 **01.json** (se mide minificado)
 ```json
-{"state":{"cuenta":84,"propina":10,"personas":4},
+{"state":{"bill":84,"tip":10,"people":4},
  "ui":[{"t":"card","c":[
-  {"t":"md","v":"## Dividir la cuenta"},
-  {"t":"field","p":{"bind":"cuenta","type":"number","min":0},"text":"Importe (€)"},
-  {"t":"slider","p":{"bind":"propina","min":0,"max":25,"unit":"%"},"text":"Propina"},
-  {"t":"slider","p":{"bind":"personas","min":1,"max":12},"text":"Personas"},
-  {"t":"text","p":{"role":"display","tone":"primary"},"text":"{money(cuenta*(1+propina/100)/personas,'EUR')}"},
-  {"t":"text","p":{"tone":"muted"},"text":"por persona · total {money(cuenta*(1+propina/100),'EUR')}"}]}]}
+  {"t":"md","v":"## Split the bill"},
+  {"t":"field","p":{"bind":"bill","type":"number","min":0},"text":"Amount (€)"},
+  {"t":"slider","p":{"bind":"tip","min":0,"max":25,"unit":"%"},"text":"Tip"},
+  {"t":"slider","p":{"bind":"people","min":1,"max":12},"text":"People"},
+  {"t":"text","p":{"role":"display","tone":"primary"},"text":"{money(bill*(1+tip/100)/people,'EUR')}"},
+  {"t":"text","p":{"tone":"muted"},"text":"per person · total {money(bill*(1+tip/100),'EUR')}"}]}]}
 ```
 
 **05.json**
