@@ -1,0 +1,18 @@
+@state hechos = []
+## Tortilla de patatas
+<text tone=muted>4 raciones · 45 min</text>
+<card tone=secondary>
+### Ingredientes
+<choice bind=hechos mode=check>
+<opt>4 huevos</opt>
+<opt>600 g de patatas</opt>
+<opt>1 cebolla</opt>
+<opt>Aceite de oliva y sal</opt>
+</choice>
+<text role=label>{len(hechos)}/4 listos</text>
+</card>
+1. Pela y corta las patatas en láminas finas.
+2. Fríelas a fuego medio con la cebolla.
+<timer secs=1200>Pochar patatas</timer>
+3. Bate los huevos, mezcla y cuaja por cada lado.
+<timer secs=180>Cuajar cada lado</timer>

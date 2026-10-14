@@ -1,0 +1,14 @@
+{
+  "name": "gui",
+  "private": true,
+  "type": "module",
+  "workspaces": ["packages/*"],
+  "scripts": {
+    "gen": "bun packages/catalog/gen/icons.ts && bun packages/catalog/gen/prompt.ts && bun packages/catalog/gen/docs.ts",
+    "check": "bun test && tsc --noEmit"
+  },
+  "devDependencies": {
+    "@types/bun": "1.4.3",
+    "typescript": "6.0.3"
+  }
+}

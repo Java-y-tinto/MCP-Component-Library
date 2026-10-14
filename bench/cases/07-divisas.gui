@@ -1,0 +1,17 @@
+@state cant = 100
+@state de = 'EUR'
+@state a = 'USD'
+@data r: m, v
+| EUR | 1
+| USD | 1.09
+| GBP | 0.85
+| JPY | 162
+<card>
+<field bind=cant type=number>Cantidad</field>
+<stack dir=row>
+<choice bind=de from=r mode=select label=De/>
+<choice bind=a from=r mode=select label=A/>
+</stack>
+<text role=display tone=primary>{fmt(cant/get(r,de,'v')*get(r,a,'v'),2)} {a}</text>
+<text tone=muted>1 {de} = {fmt(get(r,a,'v')/get(r,de,'v'),4)} {a}</text>
+</card>

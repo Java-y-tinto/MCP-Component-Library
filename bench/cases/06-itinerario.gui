@@ -1,0 +1,15 @@
+## Lisboa en 2 días
+### Sábado
+<list>
+<item icon=coffee trail=09:00 sub='Pastéis de Belém'>Desayuno</item>
+<item icon=museum trail=10:30 sub='Monasterio de los Jerónimos'>Belém</item>
+<item icon=tram trail=15:00 sub='Tranvía 28 hasta Graça'>Alfama</item>
+<item icon=restaurant trail=21:00 sub='Fado en Mouraria'>Cena</item>
+</list>
+### Domingo
+<list>
+<item icon=train trail=10:00 sub='Tren desde Rossio, 40 min'>Sintra</item>
+<item icon=castle trail=11:30 sub='Palacio da Pena'>Visita</item>
+<item icon=sunny trail=19:00 sub='Mirador de Santa Catarina'>Atardecer</item>
+</list>
+<button variant=tonal icon=map send='Hazme un mapa del itinerario'>Ver en mapa</button>

@@ -1,0 +1,15 @@
+@data p: Modelo, Precio, Peso_kg, Autonomía_h, Nota
+| Air 13 | 1199 | 1.24 | 18 | 4.6
+| XPS 14 | 1499 | 1.68 | 13 | 4.4
+| Zenbook 14 | 999 | 1.20 | 15 | 4.5
+## Portátiles ligeros
+<table data=p best=Precio:min,Peso_kg:min,Autonomía_h:max,Nota:max/>
+<stack dir=row>
+<each in=p as=x>
+<card pad=2>
+### {x.Modelo}
+<text tone=muted>{money(x.Precio,'EUR')} · {x.Peso_kg} kg</text>
+<button variant=tonal send='Más detalles del {x.Modelo}'>Detalles</button>
+</card>
+</each>
+</stack>

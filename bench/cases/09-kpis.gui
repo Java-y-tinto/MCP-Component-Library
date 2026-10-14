@@ -1,0 +1,19 @@
+@data k: Métrica, Valor, Cambio
+| Usuarios | 12480 | 8.2
+| Ingresos (k€) | 312 | -2.1
+| Churn (%) | 3.4 | -0.6
+@data s: Semana, Usuarios
+| S1 | 10900
+| S2 | 11350
+| S3 | 11920
+| S4 | 12480
+<stack dir=row>
+<each in=k as=m>
+<card pad=2>
+<text role=label tone=muted>{m.Métrica}</text>
+<text role=headline>{fmt(m.Valor)}</text>
+<text tone={m.Cambio >= 0 ? 'primary' : 'error'}>{m.Cambio >= 0 ? '▲' : '▼'} {abs(m.Cambio)} %</text>
+</card>
+</each>
+</stack>
+<chart type=line data=s x=Semana y=Usuarios/>

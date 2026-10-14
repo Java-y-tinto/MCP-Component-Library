@@ -1,0 +1,13 @@
+@state hecho = []
+## Mudanza: checklist
+<choice bind=hecho mode=check>
+<opt>Contratar camión</opt>
+<opt>Dar de baja la luz</opt>
+<opt>Cambiar dirección en el banco</opt>
+<opt>Empaquetar cocina</opt>
+<opt>Entregar llaves</opt>
+</choice>
+<text role=title>{len(hecho)} de 5 · {pct(len(hecho)/5)}</text>
+<if test={len(hecho) == 5}>
+<button icon=celebration send='¡He terminado la mudanza! ¿Qué hago ahora?'>Terminado</button>
+</if>

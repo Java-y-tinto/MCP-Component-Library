@@ -1,0 +1,16 @@
+@state r = ''
+<card>
+### ¿Cuál es el planeta más grande del sistema solar?
+<choice bind=r mode=radio>
+<opt>Saturno</opt>
+<opt>Júpiter</opt>
+<opt>Neptuno</opt>
+</choice>
+<if test={r == 'Júpiter'}>
+<text tone=primary>Correcto: su diámetro es 11 veces el de la Tierra.</text>
+</if>
+<if test={r != '' && r != 'Júpiter'}>
+<text tone=error>No. Prueba otra vez.</text>
+</if>
+<button variant=text send='Otra pregunta de astronomía'>Siguiente</button>
+</card>

@@ -1,0 +1,10 @@
+@data v: Mes, Ventas, Gastos
+| Ene | 42 | 30
+| Feb | 51 | 33
+| Mar | 47 | 35
+| Abr | 63 | 38
+| May | 70 | 41
+| Jun | 82 | 44
+## Primer semestre 2026
+<chart type=bar data=v x=Mes y=Ventas,Gastos unit=k€/>
+<text tone=muted>Margen medio: {fmt(avg(v,'Ventas')-avg(v,'Gastos'),1)} k€</text>

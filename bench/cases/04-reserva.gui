@@ -1,0 +1,17 @@
+@state nombre = ''
+@state fecha = ''
+@state personas = 2
+@state turno = 'cena'
+@state terraza = false
+<card>
+## Reservar mesa
+<field bind=nombre req>Nombre</field>
+<field bind=fecha type=date req>Fecha</field>
+<choice bind=turno mode=segmented>
+<opt v=comida>Comida</opt>
+<opt v=cena>Cena</opt>
+</choice>
+<slider bind=personas min=1 max=10>Personas</slider>
+<toggle bind=terraza>Terraza</toggle>
+<button icon=event send='Reserva: {nombre}, {fecha}, {turno}, {personas} pers., terraza {terraza ? 'sí' : 'no'}'>Confirmar</button>
+</card>
